@@ -1,0 +1,32 @@
+$font-family-base: 'Roboto';
+
+$primary: #f78a00;
+$secondary: #121016;
+$success: #43cf88;
+$info: #1884ce;
+$warning: #ffb406;
+$danger: #e71800;
+
+@font-face{
+    font-family: 'digital-number';
+    src: url('../assets/font/digital-number.ttf');
+}
+.font-digital-number {
+    font-family: digital-number, monospace;
+}
+
+.text-primary {
+    text-shadow:1px 1px 10px $primary, 1px 1px 10px $primary;
+}
+
+.bg-gradient-warning {
+    background: repeating-linear-gradient(
+        -45deg,
+        #e71800,
+        #e71800 10px,
+        transparent 10px,
+        transparent 20px
+    );
+}
+
+@import 'node_modules/bootstrap/scss/bootstrap';
