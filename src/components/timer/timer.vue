@@ -5,7 +5,8 @@
         </div>
         <div class='d-flex flex-column' style='flex-grow: 0.5;'>
             <div class='d-flex' style='flex-grow: 0.9;'></div>
-            <div class='d-flex flex-row-reverse bg-secondary border border-primary' style='flex-grow: 0.1; margin-right: 10px;'>
+            <div class='d-flex flex-row-reverse bg-secondary border border-primary'
+                style='flex-grow: 0.1; margin-right: 10px;'>
                 <div class='d-flex flex-column gap-2 justify-content-evenly p-2' style='width: 25%;'>
                     <div class='d-flex justify-content-center border border-primary gap-4 px-2 py-1'>
                         <div class='d-flex flex-column'>
@@ -14,7 +15,8 @@
                         </div>
                         <div class='d-flex flex-fill bg-gradient-warning'></div>
                     </div>
-                    <div class='d-flex flex-column justify-content-center align-items-center border border-primary px-2 py-1'>
+                    <div
+                        class='d-flex flex-column justify-content-center align-items-center border border-primary px-2 py-1'>
                         <span class='fs-3 text-primary'> 主電源供給システム </span>
                         <span class='fs-5 text-primary fw-bold'> MAIN ENERGY SUPPLY SYSTEM </span>
                     </div>
@@ -29,16 +31,20 @@
                         <span class='fs-2 text-primary'> NEW YEAR TIME REMAINING: </span>
                     </div>
                     <div class='d-flex align-items-baseline' style='width: 500px; height: 125px;'>
-                        <span class='text-primary font-digital-number' style='font-size: 275px; line-height: 170px;'>{{ time.toFormat('HH:mm') }}</span>
-                        <span class='text-primary font-digital-number' style='font-size: 200px; line-height: 170px;'>{{ time.toFormat(':ss') }}</span>
+                        <span class='text-primary font-digital-number' style='font-size: 275px; line-height: 170px;'>
+                            {{ time.hours.toString().padStart(2, '0') }}:{{ time.minutes.toString().padStart(2, '0') }}
+                        </span>
+                        <span class='text-primary font-digital-number' style='font-size: 200px; line-height: 170px;'>
+                            {{ time.seconds.toString().padStart(2, '0') }}
+                        </span>
                     </div>
                     <div class='d-flex gap-5 justify-content-center'>
                         <div class='d-flex gap-3 align-items-baseline'>
-                            <span class='fs-1 text-primary font-digital-number fw-bold'>{{ time.month }}</span>
+                            <span class='fs-1 text-primary font-digital-number fw-bold'>{{ time.months }}</span>
                             <span class='fs-2 text-primary'>{{ ' MONTHS' }}</span>
                         </div>
                         <div class='d-flex gap-3 align-items-baseline'>
-                            <span class='fs-1 text-primary font-digital-number fw-bold'>{{ time.daysInYear }}</span>
+                            <span class='fs-1 text-primary font-digital-number fw-bold'>{{ time.days }}</span>
                             <span class='fs-2 text-primary'>{{ ' DAYS' }}</span>
                         </div>
                     </div>
@@ -47,19 +53,23 @@
             <div class='d-flex flex-row-reverse' style='flex-grow: 0.2; margin-right: 10px;;'>
                 <div class='d-flex bg-secondary' style='width: 25%; height: 100%;'></div>
                 <div class='d-flex flex-fill justify-content-evenly align-items-center'>
-                    <div class='d-flex flex-column justify-content-center align-items-center bg-secondary border border-primary px-2 py-1' style='width: 7em'>
+                    <div class='d-flex flex-column justify-content-center align-items-center bg-secondary border border-primary px-2 py-1'
+                        style='width: 7em'>
                         <span class='fs-4 text-primary'> STOP </span>
                         <div class='bg-success' style='width: 100%; height: 1.5em;'></div>
                     </div>
-                    <div class='d-flex flex-column justify-content-center align-items-center bg-secondary border border-primary px-2 py-1' style='width: 7em'>
+                    <div class='d-flex flex-column justify-content-center align-items-center bg-secondary border border-primary px-2 py-1'
+                        style='width: 7em'>
                         <span class='fs-4 text-primary'> SLOW </span>
                         <div class='bg-warning' style='width: 100%; height: 1.5em;'></div>
                     </div>
-                    <div class='d-flex flex-column justify-content-center align-items-center bg-secondary border border-primary px-2 py-1' style='width: 7em'>
+                    <div class='d-flex flex-column justify-content-center align-items-center bg-secondary border border-primary px-2 py-1'
+                        style='width: 7em'>
                         <span class='fs-4 text-primary'> NORMAL </span>
                         <div class='bg-primary' style='width: 100%; height: 1.5em;'></div>
                     </div>
-                    <div class='d-flex flex-column justify-content-center align-items-center bg-secondary border border-primary px-2 py-1' style='width: 7em'>
+                    <div class='d-flex flex-column justify-content-center align-items-center bg-secondary border border-primary px-2 py-1'
+                        style='width: 7em'>
                         <span class='fs-4 text-primary'> RACING </span>
                         <div class='bg-danger' style='width: 100%; height: 1.5em;'></div>
                     </div>
@@ -74,39 +84,50 @@
 
 <script lang='ts' scoped>
 import { Vue, Options } from 'vue-class-component';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 
 @Options({
     components: {
     }
 })
 export default class Timer extends Vue {
-    public time: DateTime = DateTime.now();
+    public time: Duration = this.diffDurationWithNewYear();
 
     public mounted(): void {
         setInterval(this.updateTimer, 1);
     }
 
     private updateTimer(): void {
+        this.time = this.diffDurationWithNewYear();
+    }
+
+    private diffDurationWithNewYear(): Duration {
         const now = DateTime.now();
-        this.time = DateTime.fromObject({
-            day: 1,
-            month: 1,
+        let newYear = DateTime.fromObject({
             year: now.year + 1,
+            month: 1,
+            day: 1,
             hour: 0,
             minute: 0,
+            second: 0,
             millisecond: 0
-        }).minus(now.toObject());
+        });
+
+        if (now > newYear) {
+            newYear = newYear.plus({ year: 1 });
+        }
+
+        return newYear.diff(now, ['days', 'hours', 'minutes', 'seconds', 'milliseconds']);
     }
 }
 </script>
 
 <style scoped lang='scss'>
-    .bg-gradient-timer {
-        background: rgb(149,55,17);
-        background: -moz-linear-gradient(90deg, rgba(149,55,17,1) 0%, rgba(166,149,35,1) 25%, rgba(70,112,30,1) 75%, rgba(69,76,128,1) 100%);
-        background: -webkit-linear-gradient(90deg, rgba(149,55,17,1) 0%, rgba(166,149,35,1) 25%, rgba(70,112,30,1) 75%, rgba(69,76,128,1) 100%);
-        background: linear-gradient(90deg, rgba(149,55,17,1) 0%, rgba(166,149,35,1) 25%, rgba(70,112,30,1) 75%, rgba(69,76,128,1) 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#953711',endColorstr='#454c80',GradientType=1);
-    }
+.bg-gradient-timer {
+    background: rgb(149, 55, 17);
+    background: -moz-linear-gradient(90deg, rgba(149, 55, 17, 1) 0%, rgba(166, 149, 35, 1) 25%, rgba(70, 112, 30, 1) 75%, rgba(69, 76, 128, 1) 100%);
+    background: -webkit-linear-gradient(90deg, rgba(149, 55, 17, 1) 0%, rgba(166, 149, 35, 1) 25%, rgba(70, 112, 30, 1) 75%, rgba(69, 76, 128, 1) 100%);
+    background: linear-gradient(90deg, rgba(149, 55, 17, 1) 0%, rgba(166, 149, 35, 1) 25%, rgba(70, 112, 30, 1) 75%, rgba(69, 76, 128, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#953711', endColorstr='#454c80', GradientType=1);
+}
 </style>
